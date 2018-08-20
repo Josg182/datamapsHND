@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<body>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <script src="https://rawgit.com/Josg182/datamapsHND/master/data/datamaps.none.js"></script>
+    <div id="honduras" style="height: 600px; width: 900px;"></div>
+    <script>
+        var bubble_map = new Datamap({
+            element: document.getElementById('honduras'),
+            scope: 'honduras',
+            geographyConfig: {
+                popupOnHover: true,
+                highlightOnHover: true,
+                borderColor: '#444',
+                borderWidth: 0.5,
+                dataUrl: 'https://rawgit.com/Josg182/datamapsHND/master/data/honduras.topo.json'
+                //dataJson: topoJsonData
+            },
+            fills: {
+                'MAJOR': '#306596',
+                'MEDIUM': '#0fa0fa',
+                'MINOR': '#bada55',
+                defaultFill: '#dddddd'
+            },
+            data: {
+                'HN.AT': { fillKey: 'MINOR' },
+                'HN.CR': { fillKey: 'MAJOR' }
+            },
+            setProjection: function (element) {
+                var projection = d3.geo.mercator()
+                    .center([-86.2419, 15.2000]) // always in [East Latitude, North Longitude]
+                    .scale(7700);
+                var path = d3.geo.path().projection(projection);
+                return { path: path, projection: projection };
+            }
+        });
+        let bubbles = [
+            {
+                centered: "HN.CM",
+                fillKey: "MINOR",
+                radius: 15,
+                state: "Siguatepeque",
+								feria: "Festival del Pino",
+								longitude: -87.8535034,
+								latitude: 14.5979512
+            }
+        ]
+        // // ISO ID code for city or <state></state>
+        setTimeout(() => { // only start drawing bubbles on the map when map has rendered completely.
+            bubble_map.bubbles(bubbles, {
+                popupTemplate: function (geo, data) {
+                    return `<div class="hoverinfo">Ciudad: ${data.state}, ${data.feria}</div>`;
+                }
+            });
+        }, 1000);
+    </script>
+</body>
